@@ -1,4 +1,4 @@
-# Day 1
+# Day 2
 
 Custom stack based machine with opcodes representing addition and multiplication.
 
