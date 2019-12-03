@@ -4,16 +4,16 @@ Tracking of points and intersection in $\Z^2$.
 
 ## Python
 
-54 lines of code.
+37 lines of code.
 
 ```bash
 $ time python sol.py
 Part one: 273
 Part one: 15622
 
-real	0m0.388s
-user	0m0.332s
-sys	0m0.052s
+real	0m0.384s
+user	0m0.348s
+sys	0m0.032s
 ```
 
 

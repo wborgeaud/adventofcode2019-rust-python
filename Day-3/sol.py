@@ -7,37 +7,19 @@ def parse_input(inp):
     pinp[1] = [(x[0],int(x[1:])) for x in pinp[1]]
     return pinp
 
+directions = {'R':(1,0), 'L':(-1,0), 'U':(0,1), 'D':(0,-1)}
+
 def fill_points(instructions):
     point = (0,0)
     points = {}
     step = 1
     for x in instructions:
-        if x[0] == 'R':
-            for i in range(1,x[1]+1):
-                npoint = (point[0]+i, point[1])
-                if npoint not in points:
-                    points[npoint] = step
-                step += 1
-        elif x[0] == 'L':
-            for i in range(1,x[1]+1):
-                npoint = (point[0]-i, point[1])
-                if npoint not in points:
-                    points[npoint] = step
-                step += 1
-        elif x[0] == 'U':
-            for i in range(1,x[1]+1):
-                npoint = (point[0], point[1]+i)
-                if npoint not in points:
-                    points[npoint] = step
-                step += 1
-        elif x[0] == 'D':
-            for i in range(1,x[1]+1):
-                npoint = (point[0], point[1]-i)
-                if npoint not in points:
-                    points[npoint] = step
-                step += 1
-        else:
-            raise Exception("Parsing Error")
+        direction = directions[x[0]]
+        for i in range(1,x[1]+1):
+            npoint = (point[0]+i*direction[0], point[1]+i*direction[1])
+            if npoint not in points:
+                points[npoint] = step
+            step += 1
         point = npoint
     return points
 
