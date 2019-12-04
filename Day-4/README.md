@@ -1,6 +1,6 @@
 # Day 3
 
-Counting numbers satisfying conditions on their characters.
+Counting numbers satisfying conditions on their digits.
 
 ## Python
 
