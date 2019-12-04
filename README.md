@@ -9,7 +9,7 @@ The goal of this repository is to display my solutions to the AoC 2019 written i
 | 1    | [:heavy_check_mark:](./Day-1/sol/src/main.rs) | [:heavy_check_mark:](./Day-1/sol.py) |
 | 2    | [:heavy_check_mark:](./Day-2/sol/src/main.rs) | [:heavy_check_mark:](./Day-2/sol.py) |
 | 3    | [:heavy_check_mark:](./Day-3/sol/src/main.rs) | [:heavy_check_mark:](./Day-3/sol.py) |
-| 4    |                              |                     |
+| 4    | [:heavy_check_mark:](./Day-4/sol/src/main.rs) | [:heavy_check_mark:](./Day-4/sol.py) |
 | 5    |                              |                     |
 | 6    |                              |                     |
 | 7    |                              |                     |
