@@ -1,4 +1,4 @@
-# Day 3
+# Day 4
 
 Counting numbers satisfying conditions on their digits.
 
