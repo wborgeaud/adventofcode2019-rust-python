@@ -36,7 +36,7 @@ sys	0m0.004s
 
 ## Development differences
 
-After observing the speed difference between Rust and Python, I wondered whether it comes from regex inefficiency. I thus implemented the matching algorithm from Rust to Python in the file `sol2.py`. 
+After observing the speed difference between Rust and Python, I wondered if it came from regex inefficiency. I thus implemented the matching algorithm from Rust to Python in the file `sol2.py`. 
 ```bash
 $ time python sol2.py
 Part one: 1653
