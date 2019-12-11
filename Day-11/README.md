@@ -45,3 +45,15 @@ real	0m0.100s
 user	0m0.100s
 sys	0m0.040s
 ```
+
+
+
+## Visualisation
+
+### Part one
+
+<img src="/home/william/Desktop/AoC/2019/Day-11/first.gif" alt="first" style="zoom:100%;" />
+
+### Part two
+
+![second](/home/william/Desktop/AoC/2019/Day-11/second.gif)
