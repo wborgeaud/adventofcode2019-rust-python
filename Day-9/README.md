@@ -4,7 +4,7 @@ Another Intcode challenge, pretty straightforward this time.
 
 ## Python
 
-18 LoCs for `sol.py` and 131 LoCs for `computer.py`.
+16 LoCs for `sol.py` and 131 LoCs for `computer.py`.
 
 ```bash
 $ time python sol.py

@@ -2,7 +2,6 @@ from threading import Thread
 from queue import Queue
 from itertools import permutations
 from computer import Computer
-import time
 
 program = list(map(int, open('../input.txt').read().split(',')))
 

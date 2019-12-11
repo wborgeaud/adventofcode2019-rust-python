@@ -1,16 +1,16 @@
 class Computer:
-    def __init__(self, memory, inputs):
+    def __init__(self, memory, inputs, outputs):
         self.memory = memory + 10000*[0]
         self.ip = 0
         self.inputs = inputs
-        self.outputs = []
-        self.finished = False
+        self.outputs = outputs
         self.relative_base = 0
+        self.finished = False
     def run(self):
         while not self.step():
             pass
         return self.outputs
-    
+
     def step(self):
         code = self.memory[self.ip]
         if code % 100 == 99:
@@ -71,19 +71,19 @@ class Computer:
             mul *= self.get_value(self.ip+i+1, params_mode[i])
         self.set_value(mul, self.ip+3, params_mode[2])
         self.ip += 4
-
+    
     def read_input(self, code):
         params_mode = list(map(int,reversed(list(f"{code:03}"[:-2]))))
-        x = self.inputs.pop(0)
+        x = self.inputs.get()
         self.set_value(x, self.ip+1, params_mode[0])
         self.ip += 2
 
     def output(self, code):
         params_mode = list(map(int,reversed(list(f"{code:03}"[:-2]))))
         out = self.get_value(self.ip+1, params_mode[0])
-        self.outputs.append(out)
+        self.outputs.put(out)
         self.ip += 2
-    
+
     def jmp(self, code):
         params_mode = list(map(int,reversed(list(f"{code:04}"[:-2]))))
         test_address = [0, 0]
@@ -127,4 +127,3 @@ class Computer:
         value = self.get_value(self.ip+1, params_mode[0])
         self.relative_base += value
         self.ip += 2
-

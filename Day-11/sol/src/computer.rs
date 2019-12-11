@@ -1,23 +1,26 @@
+use std::sync::mpsc::{Receiver, Sender};
+
 pub struct Computer {
     memory: Vec<isize>,
     ip: usize,
-    input: isize,
-    outputs: Vec<isize>,
+    input_receiver: Receiver<isize>,
+    output_sender: Sender<isize>,
     relative_base: isize
 }
 
 impl Computer {
-    pub fn new(memory: Vec<isize>, input: isize) -> Self {
+    pub fn new(memory: Vec<isize>, input_receiver: Receiver<isize>, output_sender: Sender<isize>) -> Self {
         let mut nmem = memory.clone();
         nmem.append(&mut vec![0; 10000]);
         Computer {
             memory: nmem,
             ip: 0,
-            input,
-            outputs: Vec::new(),
+            input_receiver,
+            output_sender,
             relative_base: 0
         }
     }
+
 
     fn get(&self, address: usize, mode: usize) -> isize {
         match mode {
@@ -53,10 +56,10 @@ impl Computer {
         Vec::from(&params_mode[2..])
     }
 
-    pub fn run(&mut self) -> Vec<isize> {
+    pub fn run(&mut self) {
         loop {
             if self.step().is_some() {
-                return self.outputs.clone();
+                return;
             }
         }
     }
@@ -101,7 +104,8 @@ impl Computer {
 
     fn read_input(&mut self, code: isize) {
         let params_mode = Self::get_params_mode(code, 3);
-        self.set(self.input, self.ip + 1, params_mode[0]);
+        let x = self.input_receiver.recv().unwrap();
+        self.set(x, self.ip + 1, params_mode[0]);
         self.ip += 2;
     }
 
@@ -109,7 +113,7 @@ impl Computer {
         let params_mode = Self::get_params_mode(code, 3);
         let out;
         out = self.get(self.ip+1,params_mode[0]);
-        self.outputs.push(out);
+        self.output_sender.send(out).unwrap();
         self.ip += 2;
     }
 
@@ -166,4 +170,5 @@ impl Computer {
         self.relative_base += self.get(self.ip+1, params_mode[0]);
         self.ip += 2;
     }
+
 }

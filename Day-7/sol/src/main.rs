@@ -81,5 +81,5 @@ fn part_two(program: &[isize]) -> isize {
 fn main() {
     let program = get_input("../input.txt");
     println!("Part one: {}", part_one(&program));
-    println!("Part one: {}", part_two(&program));
+    println!("Part two: {}", part_two(&program));
 }

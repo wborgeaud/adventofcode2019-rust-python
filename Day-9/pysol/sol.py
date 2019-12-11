@@ -1,5 +1,3 @@
-from threading import Thread
-from queue import Queue
 from computer import Computer
 
 program = list(map(int, open('../input.txt').read().split(',')))

@@ -4,7 +4,7 @@ Running several Intcode machines concurrently.
 
 ## Python
 
-58 LoCs for `sol.py` and 151 LoCs for `computer.py`.
+57 LoCs for `sol.py` and 151 LoCs for `computer.py`.
 
 ```bash
 $ time python sol.py
