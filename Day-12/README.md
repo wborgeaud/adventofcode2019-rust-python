@@ -11,9 +11,9 @@ $ time python sol.py
 Part one: 13500
 Part two: 278013787106916
 
-real	0m7.516s
-user	0m7.576s
-sys	0m0.212s
+real    0m4.295s
+user    0m4.316s
+sys 0m0.284s
 ```
 
 

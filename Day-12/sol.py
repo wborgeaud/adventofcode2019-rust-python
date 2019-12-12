@@ -32,10 +32,10 @@ def cycles(init_pos):
         v = np.zeros(pos.shape, dtype=np.int64)
         step(pos, v)
         ans = 1
-        while not np.array_equal(pos[:,i], init_pos[:,i]) or not np.array_equal(v[:,i], [0,0,0,0]):
+        while not np.array_equal(v[:,i], [0,0,0,0]):
             step(pos, v)
             ans += 1
-        res.append(ans)
+        res.append(2*ans)
     return res
     
 def part_two(init_pos):
