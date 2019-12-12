@@ -1,6 +1,24 @@
+use num_integer::Integer;
 use regex::Regex;
 use std::fs;
-use num_integer::Integer;
+
+
+fn parse(s: &str) -> Position {
+    let re = Regex::new(r"<x=(.*), y=(.*), z=(.*)>").unwrap();
+    let bam = re.captures(s).unwrap();
+    let boom = (1..=3).map(|i| bam.get(i).unwrap().as_str().to_string());
+    let boom: Vec<isize> = boom.map(|x| x.parse().unwrap()).collect();
+    Position(boom[0], boom[1], boom[2])
+}
+
+fn get_input(fp: &str) -> Vec<Position> {
+    fs::read_to_string(fp)
+        .expect("Cannot read file")
+        .trim_end()
+        .split('\n')
+        .map(parse)
+        .collect()
+}
 
 #[derive(Debug, Copy, Clone)]
 struct Position(isize, isize, isize);
@@ -21,7 +39,7 @@ impl Position {
             0 => self.0,
             1 => self.1,
             2 => self.2,
-            _ => panic!()
+            _ => panic!(),
         }
     }
 }
@@ -35,14 +53,14 @@ impl Velocity {
         self.0.abs() + self.1.abs() + self.2.abs()
     }
     fn zeros() -> Self {
-        Velocity(0,0,0)
+        Velocity(0, 0, 0)
     }
     fn get(&self, i: isize) -> isize {
         match i {
             0 => self.0,
             1 => self.1,
             2 => self.2,
-            _ => panic!()
+            _ => panic!(),
         }
     }
 }
@@ -55,23 +73,6 @@ fn sign(a: isize, b: isize) -> isize {
     } else {
         0
     }
-}
-
-fn parse(s: &str) -> Position {
-    let re = Regex::new(r"<x=(.*), y=(.*), z=(.*)>").unwrap();
-    let bam = re.captures(s).unwrap();
-    let boom = (1..=3).map(|i| bam.get(i).unwrap().as_str().to_string());
-    let boom: Vec<isize> = boom.map(|x| x.parse().unwrap()).collect();
-    Position(boom[0], boom[1], boom[2])
-}
-
-fn get_input(fp: &str) -> Vec<Position> {
-    fs::read_to_string(fp)
-        .expect("Cannot read file")
-        .trim_end()
-        .split('\n')
-        .map(parse)
-        .collect()
 }
 
 fn gravity(pos: &[Position]) -> Vec<Velocity> {
@@ -91,7 +92,7 @@ fn gravity(pos: &[Position]) -> Vec<Velocity> {
 fn energy(pos: &[Position], v: &[Velocity]) -> isize {
     let mut res = 0;
     for i in 0..4 {
-        res += pos[i].potential()*v[i].kinetic();
+        res += pos[i].potential() * v[i].kinetic();
     }
     res
 }
@@ -116,16 +117,17 @@ fn cycles(init_pos: &[Position], index: isize) -> usize {
     let mut v = vec![Velocity::zeros(); 4];
     let mut res = 1;
     step(&mut pos, &mut v);
-    while !(0..4).all(|i| pos[i].get(index)==init_pos[i].get(index)) && !(0..4).all(|i| v[i].get(index)==0) {
+    while !(0..4).all(|i| v[i].get(index) == 0)
+    {
         step(&mut pos, &mut v);
         res += 1;
     }
-    2*res 
+    2 * res
 }
 
 fn part_two(init_pos: &[Position]) -> usize {
     let cycs: Vec<usize> = (0..3).map(|i| cycles(init_pos, i)).collect();
-    cycs.iter().fold(1, |acc,x| acc.lcm(x))
+    cycs.iter().fold(1, |acc, x| acc.lcm(x))
 }
 
 fn main() {
