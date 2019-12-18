@@ -1,7 +1,6 @@
 from threading import Thread
 from queue import Queue
 from computer import Computer
-import pickle
 
 program = list(map(int, open('../input.txt').read().split(',')))
 
@@ -56,7 +55,6 @@ def part_two(init_program):
     program = init_program.copy()
     program[0] = 2
     return solve_it(program)
-
 
 print(f"Part one: {part_one(program)}")
 print(f"Part two: {part_two(program)}")

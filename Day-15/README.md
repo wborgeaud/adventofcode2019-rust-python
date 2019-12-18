@@ -1,35 +1,35 @@
-# Day 13
+# Day 15
 
-Another Intcode challenge, this time implementing the game *Breakout*.
+BFS with graph provided by Intcode. (**Warning:** Very ugly code ahead)
 
 ## Python
 
-57 LoCs for `sol.py` and 130 LoCs for `computer.py`.
+87 LoCs for `sol.py` and 130 LoCs for `computer.py`.
 
 ```bash
 $ time python sol.py
-Part one: 251
-Part two: 12779
+Part one: 374
+Part two: 482
 
-real	0m2.393s
-user	0m2.448s
-sys	0m0.292s
+real    2m20.397s
+user    1m58.996s
+sys     0m9.160s
 ```
 
 
 
 ## Rust
 
-92 LoCs for `main.rs` and 175 LoCs for `computer.rs`.
+149 LoCs for `main.rs` and 180 LoCs for `computer.rs`.
 
 ```bash
 $ time ./target/release/sol
-Part one: 251
-Part two: 12779
+Part one: 374
+Part two: 482
 
-real	0m0.346s
-user	0m0.340s
-sys	0m0.088s
+real    0m13.383s
+user    0m10.712s
+sys     0m3.496s
 ```
 
 

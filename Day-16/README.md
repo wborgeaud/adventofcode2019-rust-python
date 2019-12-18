@@ -1,37 +1,37 @@
-# Day 10
+# Day 16
 
-Finding cycles in a 4-body problem dynamical system. 
+Signal processing-like vector manipulations.
 
 ## Python
 
-49 lines of code.
+40 lines of code.
 
 ```bash
 $ time python sol.py
-Part one: 13500
-Part two: 278013787106916
+Part one: 82435530
+Part two: 83036156
 
-real    0m4.295s
-user    0m4.316s
-sys 0m0.284s
+real	0m2.296s
+user	0m2.344s
+sys	0m0.252s
 ```
 
 
 
 ## Rust
 
-135 lines of code.
+76 lines of code.
 
 ```bash
 $ time ./target/release/sol
-Part one: 13500
-Part two: 278013787106916
+Part one: 82435530
+Part two: 83036156
 
-real	0m0.054s
-user	0m0.048s
-sys	0m0.004s
+real	0m0.609s
+user	0m0.588s
+sys	0m0.016s
 ```
 
 ## Development differences
 
-I used `numpy` in Python which makes the solution quite elegant. I didn't want to use `ndarray` in Rust, so the solution is much longer but still 100 times faster. Again, loops are killing us in Python...
+`numpy` in Python vs `std` in Rust. Timings are quite close.

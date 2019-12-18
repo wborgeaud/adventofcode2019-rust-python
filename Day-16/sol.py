@@ -1,7 +1,6 @@
 import numpy as np
 
-inp = np.array(list(map(int,open('input.txt').read().strip())),
-               dtype=np.int64)
+inp = np.array(list(map(int,open('input.txt').read().strip())),dtype=np.int64)
 
 def pattern(i):
         return np.repeat([0,1,0,-1],i)

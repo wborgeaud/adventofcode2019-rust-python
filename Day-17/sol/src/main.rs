@@ -1,8 +1,4 @@
-use std::collections::HashMap;
-use std::fs;
-use std::sync::mpsc;
-use std::thread;
-
+use std::{fs, sync::mpsc, thread};
 mod computer;
 use computer::Computer;
 
@@ -14,75 +10,91 @@ fn get_input(fp: &str) -> Vec<isize> {
         .collect()
 }
 
-fn make_tiles(program: &[isize]) -> HashMap<(isize, isize), isize> {
-    let mut tiles: HashMap<(isize, isize), isize> = HashMap::new();
+fn get_map(program: &[isize]) -> Vec<Vec<isize>> {
     let (_input_sender, input_receiver) = mpsc::channel();
     let (output_sender, output_receiver) = mpsc::channel();
     let mut c = Computer::new(program.to_vec(), input_receiver, output_sender);
     thread::spawn(move || {
         c.run();
     });
-    'run: loop {
-        let mut out = Vec::new();
-        for _ in 0..3 {
-            let x = output_receiver.recv();
-            if x.is_err() {
-                break 'run;
-            }
-            out.push(x.unwrap());
+    let mut res = vec![Vec::new()];
+    loop {
+        let out;
+        let tout = output_receiver.recv();
+        if let Ok(x) = tout {
+            out = x;
+        } else {
+            break;
         }
-        tiles.insert((out[0], out[1]), out[2]);
+        if out == 10 {
+            res.push(Vec::new());
+        } else {
+            res.last_mut().unwrap().push(out);
+        }
     }
-    tiles
+    res.iter().filter(|l| !l.is_empty()).cloned().collect()
 }
 
-fn play(program: &[isize]) -> isize {
-    let mut tiles: HashMap<(isize, isize), isize> = HashMap::new();
+fn find_inter(map: &Vec<Vec<isize>>) -> Vec<(usize, usize)> {
+    let mut inter = Vec::new();
+    for i in 1..map.len()-1 {
+        for j in 1..map[0].len()-1 {
+            if map[i][j]==35 && 
+            map[i-1][j]==35 &&
+            map[i+1][j]==35 &&
+            map[i][j-1]==35 &&
+            map[i][j+1]==35 {
+                inter.push((i,j));
+            }
+
+        }
+    }
+    inter
+}
+
+fn solve_it(program: &[isize]) -> isize {
+    let routines = String::from("A,B,B,C,C,A,B,B,C,A");
+    let ra = String::from("R,4,R,12,R,10,L,12");
+    let rb = String::from("L,12,R,4,R,12");
+    let rc = String::from("L,12,L,8,R,10");
+
     let (input_sender, input_receiver) = mpsc::channel();
     let (output_sender, output_receiver) = mpsc::channel();
     let mut c = Computer::new(program.to_vec(), input_receiver, output_sender);
     thread::spawn(move || {
         c.run();
     });
-    let mut score = 0;
-    input_sender.send(0);
-    'run: loop {
-        let mut out = Vec::new();
-        for _ in 0..3 {
-            let x = output_receiver.recv();
-            if x.is_err() {
-                break 'run;
-            }
-            out.push(x.unwrap());
+    for s in [routines, ra, rb, rc].into_iter() {
+        for c in s.bytes() {
+            input_sender.send(c as isize).unwrap();
         }
-        if (out[0], out[1]) == (-1, 0) {
-            score = out[2];
+        input_sender.send(10isize).unwrap();
+    }
+    input_sender.send(110isize).unwrap();
+    input_sender.send(10isize).unwrap();
+
+    let mut out = 0;
+    loop {
+        let tout = output_receiver.recv();
+        if let Ok(x) = tout {
+            out = x;
         } else {
-            tiles.insert((out[0], out[1]), out[2]);
-        }
-        if out[2] == 4 && tiles.values().any(|&a| a == 3) {
-            let paddle_pos = tiles.keys().find(|&a| tiles.get(a).unwrap() == &3).unwrap();
-            if out[0] > paddle_pos.0 {
-                input_sender.send(1);
-            } else if out[0] < paddle_pos.0 {
-                input_sender.send(-1);
-            } else {
-                input_sender.send(0);
-            }
+            break;
         }
     }
-    score
+    out
 }
 
 fn part_one(program: &[isize]) -> usize {
-    let tiles = make_tiles(program);
-    tiles.values().filter(|&&v| v == 2).count()
+    let map = get_map(program);
+    let inter = find_inter(&map);
+    inter.iter().map(|(x,y)| x*y).sum()
 }
 
 fn part_two(init_program: &[isize]) -> isize {
     let mut program = init_program.to_vec();
     program[0] = 2;
-    play(&program)
+    solve_it(&program)
 }
 
 fn main() {

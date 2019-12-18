@@ -1,7 +1,7 @@
-from threading import Thread
+from threading import Thread, Event
 from queue import Queue
 from computer import Computer
-import pickle
+import sys
 
 program = list(map(int, open('../input.txt').read().split(',')))
 opposite = {
@@ -85,3 +85,4 @@ def part_two(m):
 m = get_map(program)
 print(f"Part one: {part_one(m)}")
 print(f"Part two: {part_two(m)}")
+sys.exit()

@@ -1,35 +1,35 @@
-# Day 13
+# Day 17
 
-Another Intcode challenge, this time implementing the game *Breakout*.
+Intcode challenge, finding intersections and string compression.
 
 ## Python
 
-57 LoCs for `sol.py` and 130 LoCs for `computer.py`.
+60 lines of code.
 
 ```bash
 $ time python sol.py
-Part one: 251
-Part two: 12779
+Part one: 7584
+Part two: 1016738
 
-real	0m2.393s
-user	0m2.448s
-sys	0m0.292s
+real	0m0.774s
+user	0m0.752s
+sys	0m0.024s
 ```
 
 
 
 ## Rust
 
-92 LoCs for `main.rs` and 175 LoCs for `computer.rs`.
+104 lines of code.
 
 ```bash
 $ time ./target/release/sol
-Part one: 251
-Part two: 12779
+Part one: 7584
+Part two: 1016738
 
-real	0m0.346s
-user	0m0.340s
-sys	0m0.088s
+real	0m0.131s
+user	0m0.108s
+sys	0m0.040s
 ```
 
 

@@ -1,10 +1,51 @@
-use std::collections::HashMap;
-use std::fs;
-use std::sync::mpsc;
-use std::thread;
-
+use std::{fs, collections::{HashMap, HashSet}, sync::mpsc, thread, iter::FromIterator};
 mod computer;
 use computer::Computer;
+
+#[derive(Copy, Clone, Hash, Eq, PartialEq)]
+enum Cave {
+    Wall,
+    Floor,
+    Oxygen,
+}
+impl Cave {
+    fn from(i: isize) -> Self{
+        match i {
+            0 => Self::Wall,
+            1 => Self::Floor,
+            2 => Self::Oxygen,
+            _ => panic!("Invalid code")
+        }
+    }
+}
+
+type Map = HashMap<Position, (Cave, usize)>;
+
+#[derive(Copy, Clone, Hash, Eq, PartialEq)]
+struct Position(isize, isize);
+impl Position {
+    fn change(&self, code: isize) -> Self {
+        let mut new = self.clone();
+        match code {
+            1 => new.1 += 1,
+            2 => new.1 -= 1,
+            3 => new.0 += 1,
+            4 => new.0 -= 1,
+            _ => panic!("Invalid code")
+        }
+        new
+    }
+}
+
+fn opposite(code: &isize) -> isize {
+    match code {
+        1 => 2,
+        2 => 1,
+        3 => 4,
+        4 => 3,
+        _ => panic!("Invalid code")
+    }
+}
 
 fn get_input(fp: &str) -> Vec<isize> {
     fs::read_to_string(fp)
@@ -14,79 +55,95 @@ fn get_input(fp: &str) -> Vec<isize> {
         .collect()
 }
 
-fn make_tiles(program: &[isize]) -> HashMap<(isize, isize), isize> {
-    let mut tiles: HashMap<(isize, isize), isize> = HashMap::new();
-    let (_input_sender, input_receiver) = mpsc::channel();
-    let (output_sender, output_receiver) = mpsc::channel();
-    let mut c = Computer::new(program.to_vec(), input_receiver, output_sender);
-    thread::spawn(move || {
-        c.run();
-    });
-    'run: loop {
-        let mut out = Vec::new();
-        for _ in 0..3 {
-            let x = output_receiver.recv();
-            if x.is_err() {
-                break 'run;
-            }
-            out.push(x.unwrap());
-        }
-        tiles.insert((out[0], out[1]), out[2]);
-    }
-    tiles
-}
-
-fn play(program: &[isize]) -> isize {
-    let mut tiles: HashMap<(isize, isize), isize> = HashMap::new();
+fn try_path(path: &[isize], program: &[isize]) -> isize {
     let (input_sender, input_receiver) = mpsc::channel();
     let (output_sender, output_receiver) = mpsc::channel();
     let mut c = Computer::new(program.to_vec(), input_receiver, output_sender);
     thread::spawn(move || {
         c.run();
     });
-    let mut score = 0;
-    input_sender.send(0);
-    'run: loop {
-        let mut out = Vec::new();
-        for _ in 0..3 {
-            let x = output_receiver.recv();
-            if x.is_err() {
-                break 'run;
+    let mut out = 0;
+    for &v in path.iter() {
+        input_sender.send(v).unwrap();
+        out = output_receiver.recv().unwrap();
+    }
+    out
+}
+
+fn get_map(program: &[isize]) -> Map {
+    let mut map = HashMap::new();
+    map.insert(Position(0,0), (Cave::Floor, 0));
+    let mut queue = vec![(Vec::new(), Position(0,0))];
+    while !queue.is_empty() {
+        let v = queue.remove(0);
+        'inner: for d in 1..=4 {
+            if v.0.len()>0 && d == opposite(v.0.last().unwrap()) {
+                continue 'inner;
             }
-            out.push(x.unwrap());
-        }
-        if (out[0], out[1]) == (-1, 0) {
-            score = out[2];
-        } else {
-            tiles.insert((out[0], out[1]), out[2]);
-        }
-        if out[2] == 4 && tiles.values().any(|&a| a == 3) {
-            let paddle_pos = tiles.keys().find(|&a| tiles.get(a).unwrap() == &3).unwrap();
-            if out[0] > paddle_pos.0 {
-                input_sender.send(1);
-            } else if out[0] < paddle_pos.0 {
-                input_sender.send(-1);
-            } else {
-                input_sender.send(0);
+            let mut path = v.0.clone();
+            path.push(d);
+            let out = try_path(&path, program);
+            let nv = v.1.change(d);
+            map.insert(nv, (Cave::from(out), v.0.len()+1));
+            match out {
+                0 => continue 'inner,
+                _ => queue.push((path, nv)),
             }
         }
     }
-    score
+    map
 }
 
-fn part_one(program: &[isize]) -> usize {
-    let tiles = make_tiles(program);
-    tiles.values().filter(|&&v| v == 2).count()
+fn bfs(start: Position, map: &Map) -> usize {
+    let mut queue = vec![(start, 0)];
+    let mut seen = HashSet::new();
+    seen.insert(start);
+    let mut maxlen = 0;
+    while !queue.is_empty() {
+        let v = queue.remove(0);
+        if v.1 > maxlen {
+            maxlen = v.1;
+        }
+        'inner: for d in 1..=4 {
+            let nv = v.0.change(d);
+            if seen.contains(&nv) {
+                continue 'inner;
+            } else {
+                seen.insert(nv);
+            }
+            let out = map.get(&nv).unwrap().0;
+            match out {
+                Cave::Wall => continue 'inner,
+                _ => queue.push((nv, v.1+1))
+            }
+        }
+    }
+    maxlen
 }
 
-fn part_two(init_program: &[isize]) -> isize {
-    let mut program = init_program.to_vec();
-    program[0] = 2;
-    play(&program)
+fn part_one(map: &Map) -> Option<usize> {
+    for x in map.values() {
+        if x.0 == Cave::Oxygen {
+            return Some(x.1);
+        }
+    }
+    None
+}
+
+fn part_two(map: &Map) -> usize {
+    let mut start = Position(0,0);
+    for (k, v) in map.iter() {
+        if v.0  == Cave::Oxygen {
+            start = *k;
+            break;
+        }
+    }
+    bfs(start, map)
 }
 
 fn main() {
     let program = get_input("../input.txt");
-    println!("Part one: {}", part_one(&program.clone()));
-    println!("Part two: {}", part_two(&program));
+    let map = get_map(&program);
+    println!("Part one: {}", part_one(&map).unwrap());
+    println!("Part two: {}", part_two(&map));
 }

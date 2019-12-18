@@ -6,6 +6,7 @@ pub struct Computer {
     input_receiver: Receiver<isize>,
     output_sender: Sender<isize>,
     relative_base: isize,
+    stop: bool
 }
 
 impl Computer {
@@ -22,6 +23,7 @@ impl Computer {
             input_receiver,
             output_sender,
             relative_base: 0,
+            stop: false
         }
     }
 
@@ -60,7 +62,7 @@ impl Computer {
 
     pub fn run(&mut self) {
         loop {
-            if self.step().is_some() {
+            if self.step().is_some() || self.stop {
                 return;
             }
         }
@@ -106,7 +108,10 @@ impl Computer {
 
     fn read_input(&mut self, code: isize) {
         let params_mode = Self::get_params_mode(code, 3);
-        let x = self.input_receiver.recv().unwrap();
+        let bam = self.input_receiver.recv();
+        if bam.is_err() {self.stop=true;return};
+        let x = bam.unwrap();
+        // let x = self.input_receiver.recv().unwrap();
         self.set(x, self.ip + 1, params_mode[0]);
         self.ip += 2;
     }
