@@ -1,4 +1,4 @@
-# Day 16
+# Day 18
 
 Traveling salesman-like optimization problem (**Warning:** Total spaghetti code).
 

@@ -25,6 +25,7 @@ def try_path(path,program):
     for v in path:
         queue_in.put(v)
         out = queue_out.get()
+    queue_in.put("EXIT")
     return out
 
 def get_map(program):

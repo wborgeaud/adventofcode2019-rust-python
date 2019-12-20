@@ -25,7 +25,7 @@ The goal of this repository is to display my solutions to the AoC 2019 written i
 | 17    | [:heavy_check_mark:](./Day-17/sol/src/main.rs) | [:heavy_check_mark:](./Day-17/pysol/sol.py) |
 | 18    | [:heavy_check_mark:](./Day-18/sol/src/main.rs) | [:heavy_check_mark:](./Day-18/sol.py) |
 | 19    | [:heavy_check_mark:](./Day-19/sol/src/main.rs) | [:heavy_check_mark:](./Day-19/pysol/sol.py) |
-| 20   |                              |                     |
+| 20    | [:heavy_check_mark:](./Day-20/sol/src/main.rs) | [:heavy_check_mark:](./Day-20/sol.py) |
 | 21   |                              |                     |
 | 22   |                              |                     |
 | 23   |                              |                     |

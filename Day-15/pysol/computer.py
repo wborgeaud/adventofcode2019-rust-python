@@ -7,7 +7,7 @@ class Computer:
         self.relative_base = 0
         self.finished = False
     def run(self):
-        while not self.step():
+        while not self.step() and not self.finished:
             pass
         return self.outputs
 
@@ -76,6 +76,9 @@ class Computer:
     def read_input(self, code):
         params_mode = list(map(int,reversed(list(f"{code:03}"[:-2]))))
         x = self.inputs.get()
+        if x == "EXIT":
+            self.finished = True
+            return
         self.set_value(x, self.ip+1, params_mode[0])
         self.ip += 2
 
